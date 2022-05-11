@@ -1,6 +1,7 @@
 version: "3"
 services:
   erigon:
+    container_name: jfinchain
     image: domecloud/jfin-erigon
     user: root
     # network_mode: "host"
@@ -27,9 +28,16 @@ services:
     restart: always
 
   rpcdaemon: # Service to server JSON-RCP API
+    container_name: jfinchain-rpc
     image: domecloud/jfin-erigon
     user: root
-    command: rpcdaemon ${RPCDAEMON_FLAGS-} --datadir=/home/erigon/.local/share/erigon  --private.api.addr=erigon:9090 --txpool.api.addr=erigon:9090 --http.addr=0.0.0.0 --http.vhosts=* --http.corsdomain=* --http.api=eth,debug,net --ws
+    command: 
+      rpcdaemon ${RPCDAEMON_FLAGS-}
+      --datadir=/home/erigon/.local/share/erigon
+      --private.api.addr=erigon:9090
+      --txpool.api.addr=erigon:9090
+      --http.addr=0.0.0.0 --http.vhosts=* --http.corsdomain=* --http.api=eth,debug,net
+      --ws
     pid: service:erigon # Use erigon's PID namespace. It's required to open Erigon's DB from another process (RPCDaemon local-mode)
     volumes_from:
       - erigon
@@ -40,9 +48,13 @@ services:
     restart: unless-stopped
 
   downloader: # Service to download/seed historical data (need only if you use --syncmode=snap)
+    container_name: jfinchain-downloader
     image: domecloud/jfin-erigon
     user: root
-    command: downloader ${DOWNLOADER_FLAGS-} --datadir=/home/erigon/.local/share/erigon --downloader.api.addr=0.0.0.0:9093
+    command: 
+      downloader ${DOWNLOADER_FLAGS-}
+      --datadir=/home/erigon/.local/share/erigon
+      --downloader.api.addr=0.0.0.0:9093
     pid: service:erigon # Use erigon's PID namespace. It's required to open Erigon's DB from another process (RPCDaemon local-mode)
     #cpus: 0.2 # No real-time computation here, so - limit it hard
     volumes_from:
@@ -54,6 +66,7 @@ services:
     restart: unless-stopped
 
   prometheus:
+    container_name: prom
     image: prom/prometheus:v2.35.0
     user: root
     command: --log.level=warn --config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/prometheus --storage.tsdb.retention.time=150d --web.console.libraries=/usr/share/prometheus/console_libraries --web.console.templates=/usr/share/prometheus/consoles
@@ -65,8 +78,11 @@ services:
     restart: unless-stopped
 
   grafana:
+    container_name: grafana
     image: grafana/grafana:8.5.2
     user: root
+    environment:
+      - TZ=Asia/Bangkok
     ports:
       - "3000:3000"
     volumes:
