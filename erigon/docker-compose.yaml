@@ -31,7 +31,7 @@ services:
     container_name: jfinchain-rpc
     image: domecloud/jfin-erigon
     user: root
-    command: 
+    command:
       rpcdaemon ${RPCDAEMON_FLAGS-}
       --datadir=/home/erigon/.local/share/erigon
       --private.api.addr=erigon:9090
@@ -51,7 +51,7 @@ services:
     container_name: jfinchain-downloader
     image: domecloud/jfin-erigon
     user: root
-    command: 
+    command:
       downloader ${DOWNLOADER_FLAGS-}
       --datadir=/home/erigon/.local/share/erigon
       --downloader.api.addr=0.0.0.0:9093
