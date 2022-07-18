@@ -1,0 +1,40 @@
+version: "3"
+services:
+
+  node:
+    image: domecloud/jfin-node-testnet
+    command:
+      - "geth"
+      - "--datadir=/datadir"
+      - "--genesis=/datadir/genesis.json"
+      - "--networkid=3501"
+      - "--mine"
+      - "--miner.gasprice=20000000000"
+      - "--password=/datadir/password.txt"
+      - "--allow-insecure-unlock"
+      - "--unlock=0x00a601f45688dba8a070722073b015277cf36725"
+      - "--miner.etherbase=0x00a601f45688dba8a070722073b015277cf36725"
+      - "--nodekeyhex=51c55f06f286aadfcdaddf15846ad1020ad9c1ba8a08b0e8764830b3a7cf6cb0"
+      - "--miner.gasprice=20000000000"
+      - "--http"
+      - "--http.addr=0.0.0.0"
+      - "--http.api=eth,net,web3,debug,txpool"
+      - "--http.port=8545"
+      - "--http.corsdomain=*"
+      - "--http.vhosts=*"
+      - "--ws"
+      - "--ws.addr=0.0.0.0"
+      - "--ws.api=eth,net,web3,debug,txpool"
+      - "--ws.port=8546"
+      - "--ws.origins=*"
+      - "--syncmode=full"
+      - "--gcmode=archive"
+      - "--rpc.allow-unprotected-txs"
+    ports:
+      - "8545:8545"
+      - "8545:8546"
+    volumes:
+      - "./genesis.json:/datadir/genesis.json"
+      - "./datadir/validator_1:/datadir/geth"
+    restart: always
+
