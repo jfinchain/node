@@ -1,0 +1,35 @@
+version: "3"
+services:
+
+  rpc:
+    image: domecloud/jfin-node-testnet
+    command:
+      - "geth"
+      - "--datadir=/datadir"
+      - "--genesis=/datadir/genesis.json"
+      - "--bootnodes=enode://af88b1da53d6c8d4280e206a1634fd476d748e8ca8d3ed0f88a09bf4c878db87471f097f47e3930e7e2399899850ec44b40ca130ade0c784723e8b922b3bb6e8@65.108.44.103:30333"
+      - "--nodekeyhex=025057fcf8c6335b4cff6bec759847cbe65dd6cf4f51a06341198dc991de0c2f"
+      - "--miner.gasprice=20000000000"
+      - "--http"
+      - "--http.addr=0.0.0.0"
+      - "--http.api=eth,net,web3,debug,txpool"
+      - "--http.port=8545"
+      - "--http.corsdomain=*"
+      - "--http.vhosts=*"
+      - "--ws"
+      - "--ws.addr=0.0.0.0"
+      - "--ws.api=eth,net,web3,debug,txpool"
+      - "--ws.port=8546"
+      - "--ws.origins=*"
+      - "--syncmode=full"
+      - "--gcmode=archive"
+      - "--rpc.allow-unprotected-txs"
+      - "--networkid=3502"
+    ports:
+      - "31303:30303"
+#      - "8003:8545"
+#      - "8004:8546"
+    volumes:
+      - "./genesis.json:/datadir/genesis.json"
+      - "./datadir/rpc:/datadir/geth"
+    restart: always
